@@ -99,7 +99,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="game.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="entity.h" />

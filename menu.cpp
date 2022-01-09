@@ -1,6 +1,6 @@
 #include "menu.h"
 
-menu::menu(const Adafruit_ILI9341* tft) :tft_(tft)
+menu::menu(const Adafruit_ILI9341* tft, const SevSeg* sevseg) :tft_(tft), sevseg_(sevseg)
 {}
 
 void menu::display_main_menu()
@@ -53,7 +53,10 @@ int menu::read_button()
 	{
 		for (int i = 0; i < 4; i++)
 			if (digitalRead(menu_button_[i]) == LOW)
+			{
+				tone(BUZZER_PIN, 440, 10);
 				return i;
+			}
 		delay(15);
 	}
 }
@@ -88,7 +91,8 @@ void menu::handle_menu()
 		const int button = read_button();
 		if (button == 0)
 		{
-			selected_menu_element_ = (selected_menu_element_ - 1) % 3;
+			selected_menu_element_ = selected_menu_element_ - 1;
+			if (selected_menu_element_ < 0)selected_menu_element_ = 2;
 			highlight_selected_element_menu();
 		}
 		else if (button == 2)
@@ -166,12 +170,14 @@ void menu::handle_difficulty_settings()
 		switch (read_button())
 		{
 		case 0:
-			game_difficulty_ = (game_difficulty_ + 1) % 3;
+			game_difficulty_ = game_difficulty_ + 1;
+			game_difficulty_ %= 3;
 			tft_->fillRect(0, 120, 240, 40, ILI9341_BLACK);
 			display_string(60, 120, 4, ILI9341_CYAN, game_difficulty_to_string());
 			break;
 		case 2:
-			game_difficulty_ = (game_difficulty_ - 1) % 3;
+			game_difficulty_ = game_difficulty_ - 1;
+			if (game_difficulty_ < 0)game_difficulty_ = 2;
 			tft_->fillRect(0, 120, 240, 40, ILI9341_BLACK);
 			display_string(60, 120, 4, ILI9341_CYAN, game_difficulty_to_string());
 			break;
@@ -188,11 +194,11 @@ String menu::button_to_string(const int button_number)
 	switch (button_number)
 	{
 	case 7:
-		return "Upper button";
+		return "Up button";
 	case 6:
 		return "Left button";
 	case 5:
-		return "Middle button";
+		return "Down button";
 	case 4:
 		return "Right button";
 	default:
@@ -205,52 +211,87 @@ void menu::highlight_selected_element_button_settings()
 {
 	if (selected_menu_element_ == 0)
 	{
-		display_string(10, 95, 3, ILI9341_WHITE, "Move left:");
-		display_string(20, 130, 3, ILI9341_WHITE, button_to_string(game_button_[0]));
-		display_string(10, 160, 3, ILI9341_CYAN, "Move right:");
-		display_string(20, 195, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
-		display_string(10, 225, 3, ILI9341_CYAN, "Shoot:");
-		display_string(20, 260, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
+		display_string(10, 90, 3, ILI9341_WHITE, "Move left:");
+		display_string(20, 125, 3, ILI9341_WHITE, button_to_string(game_button_[0]));
+		display_string(10, 170, 3, ILI9341_CYAN, "Move right:");
+		display_string(20, 205, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
+		display_string(10, 250, 3, ILI9341_CYAN, "Shoot:");
+		display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
 	}
 	else if (selected_menu_element_ == 1)
 	{
-		display_string(10, 95, 3, ILI9341_CYAN, "Move left:");
-		display_string(20, 130, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
-		display_string(10, 160, 3, ILI9341_WHITE, "Move right:");
-		display_string(20, 195, 3, ILI9341_WHITE, button_to_string(game_button_[3]));
-		display_string(10, 225, 3, ILI9341_CYAN, "Shoot:");
-		display_string(20, 260, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
+		display_string(10, 90, 3, ILI9341_CYAN, "Move left:");
+		display_string(20, 125, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
+		display_string(10, 170, 3, ILI9341_WHITE, "Move right:");
+		display_string(20, 205, 3, ILI9341_WHITE, button_to_string(game_button_[3]));
+		display_string(10, 250, 3, ILI9341_CYAN, "Shoot:");
+		display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
 	}
 	else
 	{
-		display_string(10, 95, 3, ILI9341_CYAN, "Move left:");
-		display_string(20, 130, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
-		display_string(10, 160, 3, ILI9341_CYAN, "Move right:");
-		display_string(20, 195, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
-		display_string(10, 225, 3, ILI9341_WHITE, "Shoot:");
-		display_string(20, 260, 3, ILI9341_WHITE, button_to_string(game_button_[1]));
+		display_string(10, 90, 3, ILI9341_CYAN, "Move left:");
+		display_string(20, 125, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
+		display_string(10, 170, 3, ILI9341_CYAN, "Move right:");
+		display_string(20, 205, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
+		display_string(10, 250, 3, ILI9341_WHITE, "Shoot:");
+		display_string(20, 285, 3, ILI9341_WHITE, button_to_string(game_button_[1]));
 	}
 }
 
-void menu::display_button_settings() //repair!!
+void menu::display_button_settings()
 {
 	tft_->fillScreen(ILI9341_BLACK);
 	display_string(25, 35, 4, ILI9341_ORANGE, "BUTTONS");
 	tft_->fillRect(0, 80, 240, 3, ILI9341_RED);
-	display_string(10, 95, 3, ILI9341_WHITE, "Move left:");
-	display_string(20, 130, 3, ILI9341_WHITE, button_to_string(game_button_[0]));
-	tft_->fillRect(0, 145, 240, 3, ILI9341_RED);
-	display_string(10, 160, 3, ILI9341_CYAN, "Move right:");
-	display_string(20, 195, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
-	tft_->fillRect(0, 210, 240, 3, ILI9341_RED);
-	display_string(10, 225, 3, ILI9341_CYAN, "Shoot:");
-	display_string(20, 260, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
-	tft_->fillRect(0, 275, 240, 3, ILI9341_RED);
+	display_string(10, 90, 3, ILI9341_WHITE, "Move left:");
+	display_string(20, 125, 3, ILI9341_WHITE, button_to_string(game_button_[0]));
+	tft_->fillRect(0, 160, 240, 3, ILI9341_RED);
+	display_string(10, 170, 3, ILI9341_CYAN, "Move right:");
+	display_string(20, 205, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
+	tft_->fillRect(0, 240, 240, 3, ILI9341_RED);
+	display_string(10, 250, 3, ILI9341_CYAN, "Shoot:");
+	display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
+	tft_->fillRect(0, 318, 240, 3, ILI9341_RED);
+}
+
+void menu::display_button_change_helper()
+{
+	tft_->fillScreen(ILI9341_BLACK);
+	display_string(10, 120, 3, ILI9341_CYAN, "Press button");
+	display_string(10, 155, 3, ILI9341_CYAN, "to bind");
 }
 
 void menu::handle_button_change()
 {
+	display_button_change_helper();
+	const int x = menu_button_[read_button()];
+	switch (selected_menu_element_)
+	{
+	case 0:
+		game_button_[0] = x;
+		break;
+	case 1:
+		game_button_[3] = x;
+		break;
+	case 2:
+		game_button_[1] = x;
+		break;
+	default:
+		Serial.println("BUTTON CHANGE ERROR");
+	}
+	selected_menu_element_ = 0;
+	display_button_settings();
+}
 
+void menu::button_change_error()
+{
+	tft_->fillScreen(ILI9341_BLACK);
+	display_string(10, 120, 3, ILI9341_RED, "All buttons");
+	display_string(10, 155, 3, ILI9341_RED, "must be ");
+	display_string(10, 190, 3, ILI9341_RED, "different!");
+	read_button();
+	selected_menu_element_ = 0;
+	display_button_settings();
 }
 
 void menu::handle_buttons_settings()
@@ -262,7 +303,8 @@ void menu::handle_buttons_settings()
 		switch (read_button())
 		{
 		case 0:
-			selected_menu_element_ = (selected_menu_element_ - 1) % 3;
+			selected_menu_element_ = selected_menu_element_ - 1;
+			if (selected_menu_element_ < 0)selected_menu_element_ = 2;
 			highlight_selected_element_button_settings();
 			break;
 		case 1:
@@ -273,6 +315,11 @@ void menu::handle_buttons_settings()
 			highlight_selected_element_button_settings();
 			break;
 		case 3:
+			if (game_button_[0] == game_button_[1] || game_button_[0] == game_button_[3] || game_button_[1] == game_button_[3])
+			{
+				button_change_error();
+				break;
+			}
 			selected_menu_element_ = 0;
 			display_settings();
 			return;
@@ -300,7 +347,8 @@ void menu::handle_settings()
 		const int button = read_button();
 		if (button == 0)
 		{
-			selected_menu_element_ = (selected_menu_element_ - 1) % 2;
+			selected_menu_element_ = selected_menu_element_ - 1;
+			if (selected_menu_element_ < 0)selected_menu_element_ = 1;
 			highlight_selected_element_settings();
 		}
 		else if (button == 2)

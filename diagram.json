@@ -1,33 +1,146 @@
 {
   "version": 1,
-  "author": "Kodziras",
+  "author": "github.com/dandmano",
   "editor": "wokwi",
   "parts": [
-    { "type": "wokwi-arduino-uno", "id": "uno", "top": 331.89, "left": 1.49, "attrs": {} },
-    { "type": "wokwi-ili9341", "id": "lcd1", "top": 5.51, "left": 40.77, "attrs": {} },
+    { "type": "wokwi-arduino-mega", "id": "mega", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-ili9341", "id": "lcd1", "top": -320.71, "left": -2.61, "attrs": {} },
     {
-      "type": "wokwi-membrane-keypad",
-      "id": "keypad1",
-      "top": -8.04,
-      "left": 263.56,
-      "attrs": { "columns": "3" }
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": -170.05,
+      "left": 278.5,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn2",
+      "top": -111.04,
+      "left": 202.73,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn3",
+      "top": -112.38,
+      "left": 278.5,
+      "attrs": { "color": "blue" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn4",
+      "top": -113.06,
+      "left": 351.6,
+      "attrs": { "color": "yellow" }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": -32.9,
+      "left": 402.89,
+      "attrs": { "volume": "0.1" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": -325.57,
+      "left": 180.71,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": -325.57,
+      "left": 222.32,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": -324.53,
+      "left": 264.98,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": -247.5,
+      "left": 174.93,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": -248.67,
+      "left": 219.43,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": -248.09,
+      "left": 261.6,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-7segment",
+      "id": "sevseg1",
+      "top": -313.1,
+      "left": 303.86,
+      "attrs": { "digits": "4" }
     }
   ],
   "connections": [
-    [ "lcd1:GND", "uno:GND.1", "black", [ "v22", "h-46" ] ],
-    [ "lcd1:VCC", "uno:VIN", "red", [ "v12", "h-103", "v251", "h104" ] ],
-    [ "lcd1:SCK", "uno:13", "green", [ "v16", "h-75" ] ],
-    [ "lcd1:MISO", "uno:12", "limegreen", [ "v20", "h-78" ] ],
-    [ "lcd1:MOSI", "uno:11", "green", [ "v24", "h-75" ] ],
-    [ "lcd1:CS", "uno:10", "orange", [ "v32", "h-64" ] ],
-    [ "lcd1:D/C", "uno:9", "purple", [ "v36", "h-84" ] ],
-    [ "keypad1:R1", "uno:5", "green", [ "v14.28", "h-159.04" ] ],
-    [ "keypad1:R2", "uno:4", "lightgreen", [ "v20.86", "h-157.77" ] ],
-    [ "keypad1:R3", "uno:3", "green", [ "v28.37", "h-159.75" ] ],
-    [ "keypad1:R4", "uno:2", "lightgreen", [ "v34.95", "h-157.98" ] ],
-    [ "keypad1:C1", "uno:A3", "green", [ "v248.19", "h-167.48" ] ],
-    [ "keypad1:C2", "uno:A2", "lightgreen", [ "v254.76", "h-188.25" ] ],
-    [ "keypad1:C3", "uno:A1", "green", [ "v262.28", "h-205.52" ] ],
-    [ "keypad1:C4", "uno:A0", "lightgreen", [ "v268.85", "h-224.66" ] ]
+    [ "mega:GND.1", "lcd1:GND", "black", [ "v-12.99", "h-45.74" ] ],
+    [ "lcd1:CS", "mega:10", "limegreen", [ "v20.86", "h72.18", "v1.39" ] ],
+    [ "lcd1:D/C", "mega:9", "limegreen", [ "v13.45", "h62.24", "v2.32" ] ],
+    [ "mega:7", "btn1:1.l", "green", [ "v0" ] ],
+    [ "btn2:1.l", "mega:6", "green", [ "h0" ] ],
+    [ "btn3:1.l", "mega:5", "green", [ "h0.34", "v48.45", "h-70.41" ] ],
+    [ "btn4:1.l", "mega:4", "green", [ "h-1.68", "v57.18", "h-131.43" ] ],
+    [ "btn1:2.l", "mega:GND.3", "black", [ "h-6.7", "v296.03", "h-87.09", "v-1.83" ] ],
+    [ "btn3:2.l", "mega:GND.3", "black", [ "h-9.74", "v221.92", "h-87.09" ] ],
+    [
+      "btn2:2.l",
+      "mega:GND.3",
+      "black",
+      [ "h0.86", "v13.52", "h60.29", "v198.53", "h-81.61", "v-0.61" ]
+    ],
+    [
+      "btn4:2.l",
+      "mega:GND.3",
+      "black",
+      [ "h0.59", "v35.03", "h-76.12", "v190.01", "h-87.7", "v6.7" ]
+    ],
+    [ "bz1:2", "mega:3", "green", [ "v15.05", "h-51.97", "v-71.06", "h-157.57" ] ],
+    [ "bz1:1", "mega:GND.3", "black", [ "v149.97", "h-248.28", "v-0.51" ] ],
+    [ "mega:VIN", "lcd1:VCC", "red", [ "v18.68", "h-200.49", "v-210.46", "h72.39", "v-23.46" ] ],
+    [ "lcd1:SCK", "mega:52", "green", [ "v10.15", "h4.69", "v186.46", "h-3.2" ] ],
+    [ "lcd1:MOSI", "mega:51", "green", [ "v190.41", "h3.25" ] ],
+    [ "lcd1:MISO", "mega:50", "green", [ "v181.23", "h5.04" ] ],
+    [ "r1:1", "led1:A", "limegreen", [ "h0" ] ],
+    [ "r1:2", "mega:2", "limegreen", [ "h0.81", "v57.33", "h-25.18", "v133.53", "h56.22" ] ],
+    [ "r2:1", "led2:A", "limegreen", [ "h0" ] ],
+    [ "r2:2", "mega:1", "limegreen", [ "h-0.35", "v63.78", "h-73.2", "v131.77", "h67.93" ] ],
+    [ "led3:A", "r3:1", "limegreen", [ "v0" ] ],
+    [ "r3:2", "mega:0", "limegreen", [ "h-2.7", "v39.18", "h-115.37", "v157.54", "h81.4" ] ],
+    [ "led1:C", "mega:GND.3", "black", [ "v407.55", "h-13.52" ] ],
+    [ "led2:C", "mega:GND.3", "black", [ "v9.14", "h-44.82", "v1.87" ] ],
+    [ "led3:C", "mega:GND.3", "black", [ "v12.78", "h-92.16" ] ],
+    [ "sevseg1:DIG1", "mega:34", "green", [ "v-12.46", "h128.36", "v391.55" ] ],
+    [ "sevseg1:DIG2", "mega:35", "green", [ "v-13.39", "h103.3", "v395.29" ] ],
+    [ "sevseg1:DIG3", "mega:36", "green", [ "v-12.46", "h89.96", "v402.77" ] ],
+    [ "sevseg1:DIG4", "mega:37", "green", [ "v3.65", "h85.03", "v323.33" ] ],
+    [ "sevseg1:A", "mega:38", "green", [ "v-12.46", "h119.7", "v413.04" ] ],
+    [ "sevseg1:B", "mega:39", "green", [ "v-13.39", "h85.03", "v417.72" ] ],
+    [ "sevseg1:C", "mega:40", "green", [ "v5.52", "h100.5", "v341.09" ] ],
+    [ "sevseg1:D", "mega:41", "green", [ "v3.65", "h123.44", "v348.56" ] ],
+    [ "sevseg1:E", "mega:42", "green", [ "v4.58", "h129.3", "v350.43" ] ],
+    [ "sevseg1:F", "mega:43", "green", [ "v-13.39", "h114.77", "v434.54" ] ],
+    [ "sevseg1:G", "mega:44", "green", [ "v3.65", "h89.96", "v362.58" ] ],
+    [ "sevseg1:DP", "mega:45", "green", [ "v0.85", "h113.83", "v368.19" ] ]
   ]
 }
