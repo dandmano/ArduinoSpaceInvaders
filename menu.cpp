@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "game.h"
 
 menu::menu(const Adafruit_ILI9341* tft, const SevSeg* sevseg) :tft_(tft), sevseg_(sevseg)
 {}
@@ -33,17 +34,6 @@ void menu::display_string(const int size, const int color, const String str) con
 void menu::display_string(const String str) const
 {
 	tft_->println(str);
-}
-
-void menu::read_buttons()
-{
-	for (int i = 0; i < 4; i++)
-	{
-		if (digitalRead(menu_button_[i]) == LOW)
-			button_state_[i] = true;
-		else
-			button_state_[i] = false;
-	}
 }
 
 //single button press
@@ -88,20 +78,24 @@ void menu::handle_menu()
 	selected_menu_element_ = 0;
 	while (true)
 	{
-		const int button = read_button();
-		if (button == 0)
+		switch (read_button())
 		{
-			selected_menu_element_ = selected_menu_element_ - 1;
-			if (selected_menu_element_ < 0)selected_menu_element_ = 2;
+		case 0:
+			selected_menu_element_ -= 1;
+			if (selected_menu_element_ < 0)
+				selected_menu_element_ = 2;
 			highlight_selected_element_menu();
-		}
-		else if (button == 2)
-		{
+			break;
+		case 2:
 			selected_menu_element_ = (selected_menu_element_ + 1) % 3;
 			highlight_selected_element_menu();
-		}
-		else if (button == 1)
+			break;
+		case 1:
 			handle_menu_select();
+			break;
+		default:
+			Serial.println("error menu select");
+		}
 		delay(150);
 	}
 }
@@ -375,10 +369,13 @@ void menu::handle_menu_select()
 	switch (selected_menu_element_)
 	{
 	case 0:
-		//game
-		break;
+	{
+		game* game_ = new game(tft_, sevseg_, game_difficulty_, game_button_);
+		game_->start_game();
+		delete(game_);
+	}
+	break;
 	case 1:
-		//settings
 		handle_settings();
 		break;
 	case 2:
@@ -390,5 +387,6 @@ void menu::handle_menu_select()
 	default:
 		Serial.println("HANDLESELECTERROR");
 	}
+
 }
 

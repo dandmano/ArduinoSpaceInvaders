@@ -2,17 +2,16 @@
 #include "SPI/SPI.h"
 #include "Adafruit-GFX-Library/Adafruit_GFX.h"
 #include "Adafruit_ILI9341/Adafruit_ILI9341.h"
-#include "ArxContainer/ArxContainer.h"
-#include <string>
-#include <vector>
+#include "LinkedList.h"
+
 
 //headers made for intellisense - different for wokwi simulator
 //wokwi headers:
 //#include "SPI.h"
 //#include "Adafruit_GFX.h"
 //#include "Adafruit_ILI9341.h"
-//#include "ArxContainer.h"
 //#include "SevSeg.h"
+//#include "LinkedList.h"
 
 
 //Buttons

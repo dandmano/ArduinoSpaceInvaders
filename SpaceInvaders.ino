@@ -2,8 +2,8 @@
 #include "menu.h"
 
 Adafruit_ILI9341 tft= Adafruit_ILI9341(TFT_CS,TFT_DC);
-menu menu_ = menu(&tft);
 SevSeg sevseg;
+menu menu_ = menu(&tft,&sevseg);
 
 void initialize_sevseg(SevSeg* sevseg);
 
@@ -22,8 +22,6 @@ void setup() {
 }
 
 void loop() {
-  sevseg.setNumber(69);
-  sevseg.refreshDisplay();
   menu_.display_main_menu();
   menu_.handle_menu();
 }

@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 /.vscode
+/Adafruit_ILI9341
+/Adafruit-GFX-Library
+/ArxContainer
+/SPI

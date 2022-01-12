@@ -104,9 +104,14 @@
     <ClCompile Include="game.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Adafruit-GFX-Library\Adafruit_GFX.h" />
+    <ClInclude Include="Adafruit_ILI9341\Adafruit_ILI9341.h" />
+    <ClInclude Include="ArxContainer\ArxContainer.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="headers.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="SPI\SPI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SpaceInvaders.ino" />

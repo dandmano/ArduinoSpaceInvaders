@@ -13,7 +13,6 @@ class menu
 	int menu_button_[4] = { BUTTON_PIN1,BUTTON_PIN2,BUTTON_PIN3,BUTTON_PIN4 };
 	//default for game - 0 shoot, 1 left, 2 - , 3 right
 	int game_button_[4] = { BUTTON_PIN1,BUTTON_PIN2,BUTTON_PIN3,BUTTON_PIN4 };
-	bool button_state_[4] = { false,false,false,false };
 public:
 	explicit menu(const Adafruit_ILI9341* tft, const SevSeg* sevseg);
 	void display_main_menu();
@@ -22,7 +21,6 @@ private:
 	void display_string(const int x, const int y, const int size, const int color, const String str) const;
 	void display_string(const int size, const int color, const String str) const;
 	void display_string(const String str) const;
-	void read_buttons();
 	int read_button();
 	void highlight_selected_element_menu() const;
 	void display_authors();
