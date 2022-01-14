@@ -52,13 +52,13 @@ bool entity::border_collision(const int side)
 		if (x_ <= 0)return true;
 		return false;
 	case 1:
-		if (x_ >= 240)return true;
+		if (x_+width_ >= 240)return true;
 		return false;
 	case 2:
 		if (y_ <= 0)return true;
 		return false;
 	case 3:
-		if (y_ >= 320)return true;
+		if (y_+height_ >= 320)return true;
 		return false;
 	default:
 		Serial.println("ERROR");

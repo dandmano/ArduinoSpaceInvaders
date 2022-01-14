@@ -109,7 +109,6 @@
     <ClInclude Include="ArxContainer\ArxContainer.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="headers.h" />
-    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="SPI\SPI.h" />
   </ItemGroup>

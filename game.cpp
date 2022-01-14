@@ -8,17 +8,18 @@ game::game(const Adafruit_ILI9341* tft, const SevSeg* sevseg, const int game_dif
 	player_(player(tft, 110, 300, 20, 20)),
 	no_enemies_(no_enemies)
 {
+	
 }
 
 game::~game()
 {
-	Serial.println("WTFISGOINGON ");
 	delete player_bullet_;
 }
 
 //starting game - creating enemies, displaying objects and handling events
 void game::start_game()
 {
+	//creating enemies
 	int x=30, y=20, width = 20, height = 20, k=0;
 	for(int i=0;i<5;i++) //enemies - rows
 	{
@@ -27,19 +28,25 @@ void game::start_game()
 		for(int j=0;j<6;j++) //enemies - columns
 		{
 			enemies_[k].put_variables(tft_, x, y, width, height);
-			k++;
-			if (k >= no_enemies_)break;
+			if (++k >= no_enemies_)break;
 			x += 36;
 		}
 		if (k >= no_enemies_)break;
 		y += 36;
 	}
+
+	//preparing visual elements
 	display_game();
+	leds_update();
+	sevseg_->setNumber(score_);
+
+	//game loop
 	unsigned long previous_millis = 0;
 	const unsigned long interval = 50 - game_difficulty_*10;
 	unsigned long no_intervals = 0;
-	while(true) //petla gry
+	while(true)
 	{
+		sevseg_->refreshDisplay();
 		unsigned long current_millis = millis();
 		if(current_millis-previous_millis>=interval) //actions performed periodically every time interval
 		{
@@ -73,35 +80,45 @@ void game::display_game()
 	}
 }
 
+void game::move_enemies()
+{
+	int k=0;
+	for (int i = 0; i < 5; i++) //enemies - rows
+	{
+		const int tmp_state = enemies_move_state_[i];
+		for (int j = 0; j < 6; j++) //enemies - columns
+		{
+			if(tmp_state ==0) //row moves (left-0, right-1)
+				enemies_[k].move(-15, 0);
+			else
+				enemies_[k].move(15, 0);
+
+			if (tmp_state == enemies_move_state_[i]&&enemies_[k].border_collision(0)) //check if an enemy out of border
+				enemies_move_state_[i] = 1;
+			else if (tmp_state == enemies_move_state_[i]&&enemies_[k].border_collision(1))
+				enemies_move_state_[i] = 0;
+			if (++k >= no_enemies_)break;
+		}
+		if (k >= no_enemies_)break;
+	}
+}
+
+void game::enemy_shoot()
+{
+	
+}
+
 //handling periodic events like bullet collision, enemies movement
-void game::periodic_events(unsigned long no_intervals)
+void game::periodic_events(const unsigned long no_intervals)
 {
 	read_buttons();
 	handle_buttons();
 	if (shoot_cooldown_ > 0)shoot_cooldown_--;
-	if(player_bullet_) //
-	{
-		player_bullet_->move(0, -5);
-		for(int i=0;i<no_enemies_;i++)
-		{
-			if(player_bullet_->check_collison(&enemies_[i])) //bullet hit enemy
-			{
-				enemies_[i].kill();
-				delete player_bullet_;
-				player_bullet_ = nullptr;
-				tone(BUZZER_PIN, 320+game_difficulty_*50, 6);
-				break;
-			}
-		}
-		if(player_bullet_&&player_bullet_->border_collision(2)) //bullet out of screen
-		{
-			delete(player_bullet_);
-			player_bullet_ = nullptr;
-		}
-	}
-
+	check_player_bullet_collisons();
+	if (no_intervals % 50 == 0)move_enemies();
 }
 
+//handling button presses
 void game::handle_buttons()
 {
 	if(button_state_[0]&& shoot_cooldown_ == 0&&!player_bullet_) //strzelanie
@@ -118,6 +135,73 @@ void game::handle_buttons()
 	if (button_state_[3]&& !player_.border_collision(1)) //ruch w prawo
 	{
 		player_.move(4, 0);
+	}
+}
+
+//updating leds display
+void game::leds_update() //cos nie dziala
+{
+	switch (lives_)
+	{
+	case 0:
+	{
+		digitalWrite(LED_PIN1, LOW);
+		digitalWrite(LED_PIN2, LOW);
+		digitalWrite(LED_PIN3, LOW);
+		break;
+	}
+	case 1:
+	{
+		digitalWrite(LED_PIN1, HIGH);
+		digitalWrite(LED_PIN2, LOW);
+		digitalWrite(LED_PIN3, LOW);
+		break;
+	}
+	case 2:
+	{
+		digitalWrite(LED_PIN1, HIGH);
+		digitalWrite(LED_PIN2, HIGH);
+		digitalWrite(LED_PIN3, LOW);
+		break;
+	}
+	case 3:
+	{
+		digitalWrite(LED_PIN1, HIGH);
+		digitalWrite(LED_PIN2, HIGH);
+		digitalWrite(LED_PIN3, HIGH);
+		break;
+	}
+	default:
+	{
+		Serial.println("lives_error");
+	}
+	}
+}
+
+//player bullet collison managment
+void game::check_player_bullet_collisons()
+{
+	if (player_bullet_)
+	{
+		player_bullet_->move(0, -7);
+		for (int i = 0; i < no_enemies_; i++)
+		{
+			if (player_bullet_->check_collison(&enemies_[i])) //bullet hit enemy
+			{
+				enemies_[i].kill();
+				delete player_bullet_;
+				player_bullet_ = nullptr;
+				score_ += 10;
+				sevseg_->setNumber(score_);
+				tone(BUZZER_PIN, 320 + game_difficulty_ * 50, 6);
+				break;
+			}
+		}
+		if (player_bullet_ && player_bullet_->border_collision(2)) //bullet out of screen
+		{
+			delete(player_bullet_);
+			player_bullet_ = nullptr;
+		}
 	}
 }
 

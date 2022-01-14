@@ -2,7 +2,6 @@
 #include "SPI/SPI.h"
 #include "Adafruit-GFX-Library/Adafruit_GFX.h"
 #include "Adafruit_ILI9341/Adafruit_ILI9341.h"
-#include "LinkedList.h"
 
 
 //headers made for intellisense - different for wokwi simulator
@@ -11,7 +10,6 @@
 //#include "Adafruit_GFX.h"
 //#include "Adafruit_ILI9341.h"
 //#include "SevSeg.h"
-//#include "LinkedList.h"
 
 
 //Buttons
@@ -25,9 +23,9 @@
 #define TFT_CS 10
 #define TFT_DC 9
 //Leds
-#define LED_PIN1 2
-#define LED_PIN2 1
-#define LED_PIN3 0
+#define LED_PIN1 22
+#define LED_PIN2 23
+#define LED_PIN3 24
 //7segDisp
 #define D7_DIG1 34
 #define D7_DIG2 35
