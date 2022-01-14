@@ -1,5 +1,6 @@
 #include "headers.h"
 #include "menu.h"
+#include "game.h"
 
 Adafruit_ILI9341 tft= Adafruit_ILI9341(TFT_CS,TFT_DC);
 SevSeg sevseg;

@@ -2,11 +2,15 @@
 
 //Entity
 
-entity::entity(const Adafruit_ILI9341* tft, const int x, const int y, const int width, const int height) :tft_(tft), x_(x), y_(y), width_(width), height_(height) {}
+entity::entity(const Adafruit_ILI9341* tft, const int x, const int y, const int width, const int height) :
+	tft_(tft),
+	x_(x),
+	y_(y),
+	width_(width),
+	height_(height) {}
 
 entity::~entity()
 {
-	//Serial.println("USUSWAM");
 	draw_black();
 }
 
@@ -24,8 +28,16 @@ void entity::display()
 	draw();
 }
 
+void entity::kill()
+{
+	draw_black();
+	is_alive_ = false;
+}
+
 bool entity::check_collison(const entity* e) const
 {
+	if (!is_alive_ || !e->get_is_alive())
+		return false;
 	if (x_<e->x_ + e->width_ && x_ + width_>e->x_ && y_<e->y_ + e->height_ && y_ + height_>e->y_)
 		return true;
 	return false;
@@ -74,6 +86,11 @@ int entity::get_height() const
 	return height_;
 }
 
+bool entity::get_is_alive() const
+{
+	return is_alive_;
+}
+
 void entity::draw()
 {
 	tft_->fillRect(x_, y_, width_, height_, ILI9341_RED);
@@ -99,6 +116,17 @@ void player::draw()
 //Enemy
 enemy::enemy(const Adafruit_ILI9341* tft, const int x, const int y, const int width, const int height) :entity(tft, x, y, width, height) {}
 
+enemy::enemy() :entity(nullptr,0,0,0,0) {}
+
+void enemy::put_variables(const Adafruit_ILI9341* tft, const int x, const int y, const int width, const int height)
+{
+	tft_ = tft;
+	x_ = x;
+	y_ = y;
+	width_ = width;
+	height_ = height;
+}
+
 void enemy::draw()
 {
 	tft_->fillRect(x_, y_, width_, height_, ILI9341_RED);
@@ -107,7 +135,7 @@ void enemy::draw()
 
 
 //Bullet
-bullet::bullet(const Adafruit_ILI9341* tft, const int x, const int y, const int width, const int height, const int color):entity(tft,x,y,width,height),color_(color)
+bullet::bullet(const Adafruit_ILI9341* tft, const int x, const int y, const int width, const int height, const long long color):entity(tft,x,y,width,height),color_(color)
 {
 
 }

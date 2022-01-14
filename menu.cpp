@@ -1,7 +1,9 @@
 #include "menu.h"
 #include "game.h"
 
-menu::menu(const Adafruit_ILI9341* tft, const SevSeg* sevseg) :tft_(tft), sevseg_(sevseg)
+menu::menu(const Adafruit_ILI9341* tft, const SevSeg* sevseg) :
+	tft_(tft),
+	sevseg_(sevseg)
 {}
 
 void menu::display_main_menu()
@@ -366,27 +368,23 @@ void menu::handle_settings()
 
 void menu::handle_menu_select()
 {
-	switch (selected_menu_element_)
+	if(selected_menu_element_==0)
 	{
-	case 0:
-	{
-		game* game_ = new game(tft_, sevseg_, game_difficulty_, game_button_);
+		game* game_ = new game(tft_, sevseg_, game_difficulty_, game_button_,no_enemies_);
 		game_->start_game();
-		delete(game_);
+		delay(1000);
+		delete game_;
 	}
-	break;
-	case 1:
+	else if(selected_menu_element_ == 1)
+	{
 		handle_settings();
-		break;
-	case 2:
+	}
+	else if(selected_menu_element_ == 2)
+	{
 		display_authors();
 		read_button();
 		display_main_menu();
 		selected_menu_element_ = 0;
-		break;
-	default:
-		Serial.println("HANDLESELECTERROR");
 	}
-
 }
 

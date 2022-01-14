@@ -9,6 +9,8 @@ class menu
 	int selected_menu_element_ = 0;
 	//3 game difficulties - 0,1,2 (easy, normal, hard)
 	int game_difficulty_ = 0;
+	//default 18 - 3 rows
+	int no_enemies_ = 18;
 	//for menu - 0 up, 1 enter, 2 down, 3 back
 	int menu_button_[4] = { BUTTON_PIN1,BUTTON_PIN2,BUTTON_PIN3,BUTTON_PIN4 };
 	//default for game - 0 shoot, 1 left, 2 - , 3 right
