@@ -6,14 +6,10 @@ game::game(const Adafruit_ILI9341* tft, const SevSeg* sevseg, const int game_dif
 	game_difficulty_(game_difficulty),
 	game_button_(game_button), lives_(3 - game_difficulty),
 	player_(player(tft, 110, 300, 20, 20)),
-	no_enemies_(no_enemies)
+	no_enemies_(no_enemies),
+	no_enemies_alive_(no_enemies)
 {
 	
-}
-
-game::~game()
-{
-	delete player_bullet_;
 }
 
 //starting game - creating enemies, displaying objects and handling events
@@ -44,7 +40,7 @@ void game::start_game()
 	unsigned long previous_millis = 0;
 	const unsigned long interval = 50 - game_difficulty_*10;
 	unsigned long no_intervals = 0;
-	while(true)
+	while(game_state_)
 	{
 		sevseg_->refreshDisplay();
 		unsigned long current_millis = millis();
@@ -78,6 +74,14 @@ void game::display_game()
 	{
 		enemies_[i].display();
 	}
+}
+
+void game::display_string(const int x, const int y, const int size, const int color, const String str) const
+{
+	tft_->setCursor(x, y);
+	tft_->setTextColor(color);
+	tft_->setTextSize(size);
+	tft_->println(str);
 }
 
 void game::move_enemies()
@@ -114,7 +118,7 @@ void game::periodic_events(const unsigned long no_intervals)
 	read_buttons();
 	handle_buttons();
 	if (shoot_cooldown_ > 0)shoot_cooldown_--;
-	check_player_bullet_collisons();
+	player_bullet_handling();
 	if (no_intervals % 50 == 0)move_enemies();
 }
 
@@ -178,8 +182,22 @@ void game::leds_update() //cos nie dziala
 	}
 }
 
+//end game based on scenerio: x=0 - player lost, x=1 - player win
+void game::game_end()
+{
+	tft_->fillScreen(ILI9341_BLACK);
+	display_string(70, 100, 4, ILI9341_RED, "GAME");
+	display_string(63, 145, 4, ILI9341_RED, "OVER!");
+	display_string(45, 190, 3, ILI9341_ORANGE, "SCORE: ");
+	display_string(160, 190, 3, ILI9341_ORANGE, String(score_));
+	game_state_ = 0;
+	lives_ = 0;
+	leds_update();
+	sevseg_->blank();
+}
+
 //player bullet collison managment
-void game::check_player_bullet_collisons()
+void game::player_bullet_handling()
 {
 	if (player_bullet_)
 	{
@@ -189,6 +207,8 @@ void game::check_player_bullet_collisons()
 			if (player_bullet_->check_collison(&enemies_[i])) //bullet hit enemy
 			{
 				enemies_[i].kill();
+				no_enemies_alive_--;
+				player_bullet_->kill();
 				delete player_bullet_;
 				player_bullet_ = nullptr;
 				score_ += 10;
@@ -199,9 +219,12 @@ void game::check_player_bullet_collisons()
 		}
 		if (player_bullet_ && player_bullet_->border_collision(2)) //bullet out of screen
 		{
-			delete(player_bullet_);
+			player_bullet_->kill();
+			delete player_bullet_;
 			player_bullet_ = nullptr;
 		}
+		if (no_enemies_alive_ <= 0)
+			game_end();
 	}
 }
 

@@ -9,10 +9,6 @@ entity::entity(const Adafruit_ILI9341* tft, const int x, const int y, const int 
 	width_(width),
 	height_(height) {}
 
-entity::~entity()
-{
-	draw_black();
-}
 
 void entity::move(const int move_x, const int move_y)
 {

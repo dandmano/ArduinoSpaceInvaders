@@ -10,7 +10,6 @@ protected:
 	bool is_alive_ = false;
 public:
 	entity(const Adafruit_ILI9341* tft, const int x, const int y, const int width, const int height);
-	~entity();
 	void move(const int move_x, const int move_y);
 	void display();
 	void kill();

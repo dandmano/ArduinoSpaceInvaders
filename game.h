@@ -18,19 +18,22 @@ class game
 	//i-rows, 0-left, 1-right
 	int enemies_move_state_[5]={ 0,1,0,1,0 };
 	int no_enemies_;
+	int no_enemies_alive_;
 	int shoot_cooldown_=0;//*interval ~0,5s for easy
-	
+	//game started - 1, game over - 0
+	int game_state_ = 1;
 public:
 	game(const Adafruit_ILI9341* tft, const SevSeg* sevseg, int game_difficulty, int* game_button, int no_enemies);
-	~game();
 	void start_game();
 private:
 	void read_buttons();
 	void display_game();
+	void display_string(const int x, const int y, const int size, const int color, const String str) const;
 	void move_enemies();
 	void enemy_shoot();
 	void periodic_events(unsigned long no_intervals);
 	void handle_buttons();
 	void leds_update();
-	void check_player_bullet_collisons();
+	void game_end();
+	void player_bullet_handling();
 };

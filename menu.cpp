@@ -23,18 +23,8 @@ void menu::display_main_menu()
 void menu::display_string(const int x, const int y, const int size, const int color, const String str) const
 {
 	tft_->setCursor(x, y);
-	display_string(size, color, str);
-}
-
-void menu::display_string(const int size, const int color, const String str) const
-{
 	tft_->setTextColor(color);
 	tft_->setTextSize(size);
-	display_string(str);
-}
-
-void menu::display_string(const String str) const
-{
 	tft_->println(str);
 }
 
@@ -95,8 +85,10 @@ void menu::handle_menu()
 		case 1:
 			handle_menu_select();
 			break;
+		case 3:
+			break;
 		default:
-			Serial.println("error menu select");
+			Serial.println("MENU SELECT ERROR");
 		}
 		delay(150);
 	}
@@ -121,11 +113,19 @@ void menu::highlight_selected_element_settings() const
 	{
 		display_string(10, 95, 3, ILI9341_WHITE, "Difficulty");
 		display_string(10, 145, 3, ILI9341_ORANGE, "Buttons");
+		display_string(10, 195, 3, ILI9341_ORANGE, "Editor");
+	}
+	else if (selected_menu_element_ == 1)
+	{
+		display_string(10, 95, 3, ILI9341_ORANGE, "Difficulty");
+		display_string(10, 145, 3, ILI9341_WHITE, "Buttons");
+		display_string(10, 195, 3, ILI9341_ORANGE, "Editor");
 	}
 	else
 	{
 		display_string(10, 95, 3, ILI9341_ORANGE, "Difficulty");
-		display_string(10, 145, 3, ILI9341_WHITE, "Buttons");
+		display_string(10, 145, 3, ILI9341_ORANGE, "Buttons");
+		display_string(10, 195, 3, ILI9341_WHITE, "Editor");
 	}
 }
 
@@ -138,6 +138,8 @@ void menu::display_settings()
 	tft_->fillRect(0, 130, 240, 3, ILI9341_RED);
 	display_string(10, 145, 3, ILI9341_ORANGE, "Buttons");
 	tft_->fillRect(0, 180, 240, 3, ILI9341_RED);
+	display_string(10, 195, 3, ILI9341_ORANGE, "Editor");
+	tft_->fillRect(0, 230, 240, 3, ILI9341_RED);
 }
 
 String menu::game_difficulty_to_string()
@@ -198,7 +200,7 @@ String menu::button_to_string(const int button_number)
 	case 4:
 		return "Right button";
 	default:
-		Serial.println("ERROR");
+		Serial.println("BUTTON TO STRING ERROR");
 		return "ERROR";
 	}
 }
@@ -208,29 +210,29 @@ void menu::highlight_selected_element_button_settings()
 	if (selected_menu_element_ == 0)
 	{
 		display_string(10, 90, 3, ILI9341_WHITE, "Move left:");
-		display_string(20, 125, 3, ILI9341_WHITE, button_to_string(game_button_[0]));
+		display_string(20, 125, 3, ILI9341_WHITE, button_to_string(game_button_[1]));
 		display_string(10, 170, 3, ILI9341_CYAN, "Move right:");
 		display_string(20, 205, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
 		display_string(10, 250, 3, ILI9341_CYAN, "Shoot:");
-		display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
+		display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
 	}
 	else if (selected_menu_element_ == 1)
 	{
 		display_string(10, 90, 3, ILI9341_CYAN, "Move left:");
-		display_string(20, 125, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
+		display_string(20, 125, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
 		display_string(10, 170, 3, ILI9341_WHITE, "Move right:");
 		display_string(20, 205, 3, ILI9341_WHITE, button_to_string(game_button_[3]));
 		display_string(10, 250, 3, ILI9341_CYAN, "Shoot:");
-		display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
+		display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
 	}
 	else
 	{
 		display_string(10, 90, 3, ILI9341_CYAN, "Move left:");
-		display_string(20, 125, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
+		display_string(20, 125, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
 		display_string(10, 170, 3, ILI9341_CYAN, "Move right:");
 		display_string(20, 205, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
 		display_string(10, 250, 3, ILI9341_WHITE, "Shoot:");
-		display_string(20, 285, 3, ILI9341_WHITE, button_to_string(game_button_[1]));
+		display_string(20, 285, 3, ILI9341_WHITE, button_to_string(game_button_[0]));
 	}
 }
 
@@ -240,13 +242,13 @@ void menu::display_button_settings()
 	display_string(25, 35, 4, ILI9341_ORANGE, "BUTTONS");
 	tft_->fillRect(0, 80, 240, 3, ILI9341_RED);
 	display_string(10, 90, 3, ILI9341_WHITE, "Move left:");
-	display_string(20, 125, 3, ILI9341_WHITE, button_to_string(game_button_[0]));
+	display_string(20, 125, 3, ILI9341_WHITE, button_to_string(game_button_[1]));
 	tft_->fillRect(0, 160, 240, 3, ILI9341_RED);
 	display_string(10, 170, 3, ILI9341_CYAN, "Move right:");
 	display_string(20, 205, 3, ILI9341_CYAN, button_to_string(game_button_[3]));
 	tft_->fillRect(0, 240, 240, 3, ILI9341_RED);
 	display_string(10, 250, 3, ILI9341_CYAN, "Shoot:");
-	display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[1]));
+	display_string(20, 285, 3, ILI9341_CYAN, button_to_string(game_button_[0]));
 	tft_->fillRect(0, 318, 240, 3, ILI9341_RED);
 }
 
@@ -264,13 +266,13 @@ void menu::handle_button_change()
 	switch (selected_menu_element_)
 	{
 	case 0:
-		game_button_[0] = x;
+		game_button_[1] = x;
 		break;
 	case 1:
 		game_button_[3] = x;
 		break;
 	case 2:
-		game_button_[1] = x;
+		game_button_[0] = x;
 		break;
 	default:
 		Serial.println("BUTTON CHANGE ERROR");
@@ -320,18 +322,63 @@ void menu::handle_buttons_settings()
 			display_settings();
 			return;
 		default:
-			Serial.println("ERROR");
+			Serial.println("BUTTON SETTINGS ERROR");
 			return;
 		}
 	}
+}
+
+void menu::display_editor_settings()
+{
+	tft_->fillScreen(ILI9341_BLACK);
+	display_string(50, 25, 4, ILI9341_ORANGE, "EDITOR");
+	tft_->fillRect(0, 70, 240, 3, ILI9341_RED);
+	display_string(40, 80, 3, ILI9341_CYAN, "Number of:");
+	display_string(60, 115, 3, ILI9341_CYAN, "enemies");
+	tft_->fillRect(0, 150, 240, 3, ILI9341_RED);
+	display_string(100, 165, 4, ILI9341_BLUE, String(no_enemies_));
+	tft_->fillRect(0, 215, 240, 3, ILI9341_RED);
+}
+
+void menu::handle_editor_settings()
+{
+	display_editor_settings();
+	int x = 0;
+	while(x!=1&&x!=3)
+	{
+		delay(100);
+		x = read_button();
+		if(x==0)
+		{
+			if (no_enemies_ < 30)
+			{
+				no_enemies_++;
+				tft_->fillRect(50, 160, 100, 50,ILI9341_BLACK);
+				display_string(100, 165, 4, ILI9341_BLUE, String(no_enemies_));
+			}
+		}
+		else if(x==2)
+		{
+			if (no_enemies_ > 1)
+			{
+				no_enemies_--;
+				tft_->fillRect(50, 160, 100, 50, ILI9341_BLACK);
+				display_string(100, 165, 4, ILI9341_BLUE, String(no_enemies_));
+			}
+		}
+	}
+	selected_menu_element_ = 0;
+	display_settings();
 }
 
 void menu::handle_settings_select()
 {
 	if (selected_menu_element_ == 0)
 		handle_difficulty_settings();
-	else
+	else if (selected_menu_element_ == 1)
 		handle_buttons_settings();
+	else
+		handle_editor_settings();
 }
 
 void menu::handle_settings()
@@ -343,13 +390,13 @@ void menu::handle_settings()
 		const int button = read_button();
 		if (button == 0)
 		{
-			selected_menu_element_ = selected_menu_element_ - 1;
-			if (selected_menu_element_ < 0)selected_menu_element_ = 1;
+			selected_menu_element_ --;
+			if (selected_menu_element_ < 0)selected_menu_element_ = 2;
 			highlight_selected_element_settings();
 		}
 		else if (button == 2)
 		{
-			selected_menu_element_ = (selected_menu_element_ + 1) % 2;
+			selected_menu_element_ = (selected_menu_element_ + 1) % 3;
 			highlight_selected_element_settings();
 		}
 		else if (button == 1)
@@ -370,10 +417,10 @@ void menu::handle_menu_select()
 {
 	if(selected_menu_element_==0)
 	{
-		game* game_ = new game(tft_, sevseg_, game_difficulty_, game_button_,no_enemies_);
-		game_->start_game();
-		delay(1000);
-		delete game_;
+		game game_ = game(tft_, sevseg_, game_difficulty_, game_button_,no_enemies_);
+		game_.start_game();
+		read_button();
+		display_main_menu();
 	}
 	else if(selected_menu_element_ == 1)
 	{
