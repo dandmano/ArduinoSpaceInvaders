@@ -1,17 +1,10 @@
 #pragma once
-#include "SPI/SPI.h"
-#include "Adafruit-GFX-Library/Adafruit_GFX.h"
-#include "Adafruit_ILI9341/Adafruit_ILI9341.h"
+#include "SPI.h"
+#include "Adafruit_GFX.h"
+#include "Adafruit_ILI9341.h"
+#include "SevSeg.h"
 
-
-//headers made for intellisense - different for wokwi simulator
-//wokwi headers:
-//#include "SPI.h"
-//#include "Adafruit_GFX.h"
-//#include "Adafruit_ILI9341.h"
-//#include "SevSeg.h"
-
-
+//Pins
 //Buttons
 #define BUTTON_PIN1 7
 #define BUTTON_PIN2 6
